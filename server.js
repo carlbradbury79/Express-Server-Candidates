@@ -4,40 +4,14 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 const port = 5000;
 const Candidate = require('./models/candidateModel');
+const addCandidate = require('./controllers/candidateController').addCandidate
 
 connectDB();
 
 app.use(express.json({ extended: false }));
 
 // POST method route
-app.post('/', async function (req, res) {
-  // Get candidates details
-  const { name, skills } = req.body;
-  try {
-    //   Check if user exists (by name)
-    const userExists = await Candidate.findOne({ name });
-
-    // User exists, throw error
-    if (userExists) {
-      res.sendStatus(403);
-      throw new Error('User exists');
-    }
-
-    // Create new candidate
-    const newCandidate = await Candidate.create({
-      name,
-      skills,
-    });
-
-    if (newCandidate) {
-      res.status(200).send('Success!');
-    } else {
-      res.status(400).send('Invalid Data');
-    }
-  } catch (error) {
-    console.log('Error');
-  }
-});
+app.post('/', addCandidate);
 
 // GET method route
 app.get('/', async function (req, res) {
